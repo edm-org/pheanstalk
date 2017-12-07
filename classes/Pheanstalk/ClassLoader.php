@@ -15,7 +15,6 @@ class Pheanstalk_ClassLoader
 
     /**
      * Registers Pheanstalk_ClassLoader as an SPL class loader.
-     * Inserts self first, retains existing loaders and __autoload()
      *
      * @param string $path Path to Pheanstalk classes directory
      */
@@ -24,13 +23,7 @@ class Pheanstalk_ClassLoader
         self::$_path = $path;
         self::addPath($path);
 
-        if ($loaders = spl_autoload_functions()) {
-            array_map('spl_autoload_unregister', $loaders);
-        } else {
-            $loaders = function_exists('__autoload') ? array('__autoload') : array();
-        }
-        array_unshift($loaders, array(__CLASS__, 'load'));
-        array_map('spl_autoload_register', $loaders);
+		spl_autoload_register(array(__CLASS__, 'load'));
     }
 
     /**
